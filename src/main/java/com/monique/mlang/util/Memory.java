@@ -1,5 +1,7 @@
 package com.monique.mlang.util;
 
+import static com.monique.mlang.util.u_byte.ubyte;
+
 public interface Memory {
 
     public u_byte memRead(int addr);
@@ -11,7 +13,7 @@ public interface Memory {
     }
 
     public default void memWrite16(int pos, u_short value) {
-        memWrite(pos, u_byte.of(value.get() & 0xFF));
-        memWrite(pos + 1, u_byte.of((value.get() >> 8) & 0xFF));
+        memWrite(pos, ubyte(value.get() & 0xFF));
+        memWrite(pos + 1, ubyte((value.get() >> 8) & 0xFF));
     }
 }

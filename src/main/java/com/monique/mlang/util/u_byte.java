@@ -3,13 +3,11 @@ package com.monique.mlang.util;
 public final class u_byte {
     private short ubyte = 0;
 
-    public u_byte() { }
-
-    public u_byte(int value) {
+    private u_byte(int value) {
         set(value);
     }
 
-    public static u_byte of(int value) {
+    public static u_byte ubyte(int value) {
         return new u_byte(value);
     }
 
@@ -27,5 +25,18 @@ public final class u_byte {
 
     public void set(u_byte ubyte) {
         set(ubyte.get());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            if (obj instanceof u_byte) {
+                return ((u_byte) obj).get() == get();
+            }
+            if (obj instanceof Integer) {
+                return ((short) ((int) obj) & 0xFF) == get();
+            }
+        }
+        return false;
     }
 }

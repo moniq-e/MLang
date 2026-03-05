@@ -4,13 +4,14 @@ import java.util.Arrays;
 
 import com.monique.mlang.util.Memory;
 import com.monique.mlang.util.u_byte;
+import static com.monique.mlang.util.u_byte.ubyte;
 
 public class Bus implements Memory {
     private u_byte[] memory;
 
     public Bus(String rom) {
         memory = new u_byte[0xFFFF];
-        Arrays.fill(memory, new u_byte());
+        Arrays.fill(memory, ubyte(0));
         loadRom(rom);
     }
 
