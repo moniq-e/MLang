@@ -11,7 +11,7 @@ public class Bus implements Memory {
 
     public Bus(String rom) {
         memory = new u_byte[0xFFFF];
-        Arrays.fill(memory, ubyte(0));
+        Arrays.setAll(memory, i -> ubyte(0));
         loadRom(rom);
     }
 

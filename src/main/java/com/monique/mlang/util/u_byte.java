@@ -29,14 +29,27 @@ public final class u_byte {
 
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) {
-            if (obj instanceof u_byte) {
-                return ((u_byte) obj).get() == get();
-            }
-            if (obj instanceof Integer) {
-                return ((short) ((int) obj) & 0xFF) == get();
-            }
+        if (super.equals(obj)) return true;
+
+        if (obj instanceof u_byte) {
+            return ((u_byte) obj).get() == get();
+        }
+        if (obj instanceof Byte) {
+            return equals((byte) obj);
+        }
+        if (obj instanceof Number) {
+            return equals(((Number) obj).intValue());
         }
         return false;
+    }
+
+    public boolean equals(int value) {
+        return value == get();
+    }
+    public boolean equals(short value) {
+        return value == get();
+    }
+    public boolean equals(byte value) {
+        return Unsign.unsignByte(value) == get();
     }
 }
