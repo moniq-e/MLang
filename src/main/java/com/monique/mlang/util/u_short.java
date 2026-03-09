@@ -16,11 +16,11 @@ public final class u_short {
     }
 
     public int get() {
-        return ushort & 0xFFFF;
+        return Unsign.unsignShort(ushort);
     }
 
     public void set(int value) {
-        this.ushort = value & 0xFFFF;
+        this.ushort = Unsign.unsignShort(value);
     }
 
     @Override

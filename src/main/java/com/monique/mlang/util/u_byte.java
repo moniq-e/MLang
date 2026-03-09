@@ -18,11 +18,11 @@ public final class u_byte {
     }
 
     public short get() {
-        return (short) (ubyte & 0xFF);
+        return Unsign.unsignByte(ubyte);
     }
 
     public void set(int value) {
-        this.ubyte = (short) (value & 0xFF);
+        this.ubyte = Unsign.unsignByte(value);
     }
 
     public void set(u_byte ubyte) {

@@ -13,6 +13,32 @@ public class CPU implements Memory {
         this.bus = bus;
     }
 
+    public void run() {
+        while (true) {
+            var code = memRead(pc.get()).get();
+            incPC();
+
+            switch (code) {
+                //break
+                case 0x00 -> {
+                    return;
+                }
+                //print
+                case 0x01 -> {
+                    System.out.println(memRead(pc.get()).get());
+                }
+            }
+        }
+    }
+
+    public void incPC() {
+        pc.set(pc.get() + 1);
+    }
+
+    public void incPC(int value) {
+        pc.set(pc.get() + value);
+    }
+
     @Override
     public u_byte memRead(int addr) {
         return bus.memRead(addr);
