@@ -17,7 +17,13 @@ public class Bus implements Memory {
 
     public void loadRom(String rom) {
         for (int i = 0; i < rom.length(); i += 8) {
-            memory[i].set(Integer.parseInt(rom.substring(i, i + 8), 2));
+            memory[i / 8].set(Integer.parseInt(rom.substring(i, i + 8), 2));
+        }
+    }
+
+    public void clear() {
+        for (var ub : memory) {
+            ub.set(0);
         }
     }
 

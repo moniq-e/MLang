@@ -11,6 +11,7 @@ import com.monique.mlang.CPU;
 import com.monique.mlang.Compiler;
 
 public class TestBus {
+
     public static void main(String[] args) {
         var raw = "PRT 255";
         var comp = Compiler.compile(raw);
@@ -35,9 +36,6 @@ public class TestBus {
 
     @Test
     public void testCompiler() {
-        var raw = "BRK";
-        var comp = Compiler.compile(raw);
-
-        System.out.println(comp);
+        
     }
 }

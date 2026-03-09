@@ -1,21 +1,16 @@
 package com.monique.mlang;
 
 public class Compiler {
+    private static Instructions instmap = new Instructions();
 
     public static String compile(String raw) {
         var bin = "";
 
-        var inst = raw.split(" |\n");
+        var insts = raw.split(" |\n");
 
-        for (var i : inst) {
-            bin += (switch (i) {
-                case "BRK":
-                    yield parse(0x00);
-                case "PRT":
-                    yield parse(0x01);
-                default:
-                    yield parse(i);
-            });
+        for (var value : insts) {
+            var inst = instmap.get(value);
+            bin += inst != null ? parse(inst) : parse(value);
         }
         return bin;
     }
