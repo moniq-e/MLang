@@ -1,5 +1,7 @@
 package com.monique.mlang.util;
 
+import static com.monique.mlang.util.u_short.ushort;
+
 public final class u_byte {
     private short ubyte = 0;
 
@@ -12,7 +14,7 @@ public final class u_byte {
     }
 
     public u_short u_short() {
-        return new u_short(this);
+        return ushort(this);
     }
 
     public short get() {

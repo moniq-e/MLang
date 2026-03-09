@@ -10,11 +10,6 @@ import com.monique.mlang.Bus;
 
 public class TestBus {
 
-    public static void main(String[] args) {
-        var bus = new Bus("");
-        bus.memWrite(0x01, ubyte(0x55));
-    }
-
     @Test
     public void testMemReadWriteToRam() {
         var bus = new Bus("");

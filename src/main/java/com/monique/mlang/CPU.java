@@ -3,9 +3,10 @@ package com.monique.mlang;
 import com.monique.mlang.util.Memory;
 import com.monique.mlang.util.u_byte;
 import com.monique.mlang.util.u_short;
+import static com.monique.mlang.util.u_short.ushort;
 
 public class CPU implements Memory {
-    private u_short pc = new u_short();
+    private u_short pc = ushort(0);
     private Bus bus;
 
     public CPU(Bus bus) {
