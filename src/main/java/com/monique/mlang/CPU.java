@@ -3,6 +3,8 @@ package com.monique.mlang;
 import com.monique.mlang.util.Memory;
 import com.monique.mlang.util.u_byte;
 import com.monique.mlang.util.u_short;
+
+import static com.monique.mlang.util.u_byte.ubyte;
 import static com.monique.mlang.util.u_short.ushort;
 
 public class CPU implements Memory {
@@ -15,7 +17,7 @@ public class CPU implements Memory {
 
     public void run() {
         while (true) {
-            var code = memRead(pc.get()).get();
+            var code = memRead(pc).get();
             incPC();
 
             switch (code) {
@@ -25,7 +27,18 @@ public class CPU implements Memory {
                 }
                 //print
                 case 0x01 -> {
-                    System.out.println(memRead(pc.get()).get());
+                    System.out.println(ramRead(memRead(pc).get()).get());
+                    incPC();
+                }
+                //store
+                case 0x02 -> {
+                    ramWrite(memRead(pc).get(), memRead(pc.get() + 1));
+                    incPC(2);
+                }
+                //add
+                case 0x03 -> {
+                    ramWrite(memRead(pc).get(), ubyte(memRead(pc.get() + 1).get() + memRead(pc.get() + 2).get()));
+                    incPC(3);
                 }
             }
         }
@@ -47,5 +60,13 @@ public class CPU implements Memory {
     @Override
     public void memWrite(int addr, u_byte value) {
         bus.memWrite(addr, value);
+    }
+
+    public u_byte ramRead(int addr) {
+        return bus.ramRead(addr);
+    }
+
+    public void ramWrite(int addr, u_byte value) {
+        bus.ramWrite(addr, value);
     }
 }

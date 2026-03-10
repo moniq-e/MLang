@@ -6,7 +6,7 @@ public class Compiler {
     public static String compile(String raw) {
         var bin = "";
 
-        var insts = raw.split(" |\n");
+        var insts = raw.split(" |\\R");
 
         for (var value : insts) {
             var inst = instmap.get(value);

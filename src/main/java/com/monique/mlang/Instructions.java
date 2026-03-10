@@ -8,6 +8,8 @@ public class Instructions {
     public Instructions() {
         map.put("BRK", 0x00);
         map.put("PRT", 0x01);
+        map.put("STR", 0x02);
+        map.put("ADD", 0x03);
     }
 
     public Integer get(String name) {

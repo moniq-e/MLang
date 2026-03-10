@@ -3,6 +3,9 @@ package com.monique;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 import org.junit.jupiter.api.Test;
 
 import static com.monique.mlang.util.u_byte.ubyte;
@@ -12,8 +15,8 @@ import com.monique.mlang.Compiler;
 
 public class TestBus {
 
-    public static void main(String[] args) {
-        var raw = "PRT 255";
+    public static void main(String[] args) throws IOException {
+        var raw = new String(TestBus.class.getResourceAsStream("/test.mlang").readAllBytes(), StandardCharsets.UTF_8);
         var comp = Compiler.compile(raw);
 
         var cpu = new CPU(new Bus(comp));
