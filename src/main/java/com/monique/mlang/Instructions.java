@@ -7,12 +7,12 @@ public class Instructions {
 
     public Instructions() {
         map.put("BRK", 0x00);
-        map.put("PRT", 0x01);
-        map.put("STR", 0x02);
-        map.put("ADD", 0x03);
+        map.put("PRT", 0x55);
+        map.put("STR", 0xFF);
+        map.put("ADD", 0x81);
     }
 
     public Integer get(String name) {
-        return map.get(name);
+        return map.get(name.toUpperCase());
     }
 }

@@ -26,24 +26,26 @@ public class CPU implements Memory {
                     return;
                 }
                 //PRT
-                case 0x01 -> {
+                case 0x55 -> {
                     var addr = memRead(pc);
-                    System.out.println(memRead(addr.get()).get());
+                    System.out.println(ramRead(addr.get()).get());
                     incPC();
                 }
                 //STR
-                case 0x02 -> {
+                case 0xFF -> {
                     var addr = memRead(pc);
                     var value = memRead(pc.get() + 1);
-                    memWrite(addr.get(), value);
+                    ramWrite(addr.get(), value);
                     incPC(2);
                 }
                 //ADD
-                case 0x03 -> {
+                case 0x81 -> {
                     var addr = memRead(pc);
-                    var a = memRead(pc.get() + 1);
-                    var b = memRead(pc.get() + 2);
-                    memWrite(addr.get(), ubyte(a.get() + b.get()));
+                    var aAddr = memRead(pc.get() + 1);
+                    var bAddr = memRead(pc.get() + 2);
+                    var a = ramRead(aAddr.get());
+                    var b = ramRead(bAddr.get());
+                    ramWrite(addr.get(), ubyte(a.get() + b.get()));
                     incPC(3);
                 }
             }

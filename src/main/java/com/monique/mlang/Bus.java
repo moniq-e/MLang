@@ -11,7 +11,6 @@ public class Bus implements Memory {
     private int romSize;
 
     public Bus(String rom) {
-        romSize = rom.length() / 8;
         memory = new u_byte[0xFFFF];
         Arrays.setAll(memory, i -> ubyte(0));
         loadRom(rom);
@@ -19,6 +18,7 @@ public class Bus implements Memory {
 
     public void loadRom(String rom) {
         clear();
+        romSize = rom.length() / 8;
         for (int i = 0; i < romSize; i++) {
             memory[i].set(Integer.parseInt(rom.substring(i * 8, i * 8 + 8), 2));
         }
