@@ -1,9 +1,17 @@
 package com.monique.mlang;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 public class Compiler {
     private static Instructions instmap = new Instructions();
 
-    public static String compile(String raw) {
+    public static void compile(String path) throws IOException, URISyntaxException {
+        var raw = new String(Compiler.class.getResourceAsStream(path).readAllBytes(), StandardCharsets.UTF_8);
         var bin = "";
 
         var insts = raw.split(" |\\R");
@@ -12,7 +20,21 @@ public class Compiler {
             var inst = instmap.get(value);
             bin += inst != null ? parse(inst) : parse(value);
         }
-        return bin;
+        Files.write(changeExtension(new File(Compiler.class.getResource(path).toURI()), ".mbin"), binaryStringToByteArray(bin));
+    }
+
+    public static byte[] binaryStringToByteArray(String source) {
+        var res = new byte[source.length() / 8];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = (byte) (Integer.parseInt(source.substring(i * 8, i * 8 + 8), 2) & 0xFF);
+        }
+        return res;
+    }
+
+    public static Path changeExtension(File f, String ext) {
+        int i = f.getName().lastIndexOf('.');
+        String name = i >= 0 ? f.getName().substring(0, i - 1) : f.getName();
+        return new File(f.getParent(), name + ext).toPath();
     }
 
     private static String parse(int value) {

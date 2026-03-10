@@ -3,7 +3,6 @@ package com.monique;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
@@ -15,9 +14,9 @@ import com.monique.mlang.Compiler;
 
 public class TestBus {
 
-    public static void main(String[] args) throws IOException {
-        var raw = new String(TestBus.class.getResourceAsStream("/test.mlang").readAllBytes(), StandardCharsets.UTF_8);
-        var comp = Compiler.compile(raw);
+    public static void main(String[] args) throws Exception {
+        Compiler.compile("/test.mlang");
+        var comp = new String(TestBus.class.getResourceAsStream("/test.mbin").readAllBytes(), StandardCharsets.UTF_8);
 
         var cpu = new CPU(new Bus(comp));
         cpu.run();
