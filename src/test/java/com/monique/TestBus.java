@@ -3,7 +3,7 @@ package com.monique;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.nio.charset.StandardCharsets;
+import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ public class TestBus {
 
     public static void main(String[] args) throws Exception {
         Compiler.compile("/test.mlang");
-        var comp = new String(TestBus.class.getResourceAsStream("/test.mbin").readAllBytes(), StandardCharsets.UTF_8);
+        var comp = new File(TestBus.class.getResource("/test.mbin").toURI());
 
         var cpu = new CPU(new Bus(comp));
         cpu.run();
@@ -24,7 +24,7 @@ public class TestBus {
 
     @Test
     public void testMemReadWriteToRam() {
-        var bus = new Bus("");
+        var bus = new Bus();
 
         bus.memWrite(0x01, ubyte(0x55));
         assertEquals(0x55, bus.memRead(0x01).get());
@@ -34,10 +34,5 @@ public class TestBus {
         assertNotEquals(ubyte(0x54), bus.memRead(0x01).get());
 
         assertNotEquals(0x55, bus.memRead(0x02).get());
-    }
-
-    @Test
-    public void testCompiler() {
-        
     }
 }

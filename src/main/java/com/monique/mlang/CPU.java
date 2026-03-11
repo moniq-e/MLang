@@ -10,9 +10,11 @@ import static com.monique.mlang.util.u_short.ushort;
 public class CPU implements Memory {
     private u_short pc = ushort(0);
     private Bus bus;
+    private RAM ram;
 
     public CPU(Bus bus) {
         this.bus = bus;
+        this.ram = new RAM(bus);
     }
 
     public void run() {
@@ -25,28 +27,78 @@ public class CPU implements Memory {
                 case 0x00 -> {
                     return;
                 }
-                //PRT
+                //PRT addr_value
                 case 0x55 -> {
                     var addr = memRead(pc);
-                    System.out.println(ramRead(addr.get()).get());
+                    System.out.println(ram.memRead(addr).get());
                     incPC();
                 }
-                //STR
+                //STR addr_dest value
                 case 0xFF -> {
                     var addr = memRead(pc);
                     var value = memRead(pc.get() + 1);
-                    ramWrite(addr.get(), value);
+                    ram.memWrite(addr, value);
                     incPC(2);
                 }
-                //ADD
+                //ADD addr_dest addr_1 addr_2
                 case 0x81 -> {
                     var addr = memRead(pc);
                     var aAddr = memRead(pc.get() + 1);
                     var bAddr = memRead(pc.get() + 2);
-                    var a = ramRead(aAddr.get());
-                    var b = ramRead(bAddr.get());
-                    ramWrite(addr.get(), ubyte(a.get() + b.get()));
+                    var a = ram.memRead(aAddr);
+                    var b = ram.memRead(bAddr);
+                    ram.memWrite(addr, ubyte(a.get() + b.get()));
                     incPC(3);
+                }
+                //CMP addr_dest addr_1 addr_2
+                case 0x42 -> {
+                    var addr = memRead(pc);
+                    var aAddr = memRead(pc.get() + 1);
+                    var bAddr = memRead(pc.get() + 2);
+                    var a = ram.memRead(aAddr);
+                    var b = ram.memRead(bAddr);
+                    var res = Math.min(Math.max(a.get() - b.get(), -1), 1);
+                    ram.memWrite(addr, ubyte(res));
+                    incPC(3);
+                }
+                //POS addr_dest
+                case 0x03 -> {
+                    var addr = memRead(pc);
+                    incPC();
+                    ram.memWrite(addr, ubyte(pc.get()));
+                }
+                //JMP addr_dest
+                case 0xF0 -> {
+                    var addr = ram.memRead(memRead(pc));
+                    pc.set(addr.get());
+                }
+                //EQJ addr_1 addr_2 addr_dest
+                case 0x0F -> {
+                    var aAddr = memRead(pc.get());
+                    var bAddr = memRead(pc.get() + 1);
+                    var addr = ram.memRead(memRead(pc.get() + 2));
+                    var a = ram.memRead(aAddr);
+                    var b = ram.memRead(bAddr);
+
+                    if (a.equals(b)) {
+                        pc.set(addr.get());
+                    } else {
+                        incPC(3);
+                    }
+                }
+                //NQJ addr_1 addr_2 addr_dest
+                case 0x0E -> {
+                    var aAddr = memRead(pc.get());
+                    var bAddr = memRead(pc.get() + 1);
+                    var addr = ram.memRead(memRead(pc.get() + 2));
+                    var a = ram.memRead(aAddr);
+                    var b = ram.memRead(bAddr);
+
+                    if (!a.equals(b)) {
+                        pc.set(addr.get());
+                    } else {
+                        incPC(3);
+                    }
                 }
             }
         }
@@ -70,11 +122,25 @@ public class CPU implements Memory {
         bus.memWrite(addr, value);
     }
 
-    public u_byte ramRead(int addr) {
-        return bus.ramRead(addr);
-    }
+    private class RAM implements Memory {
+        private Bus bus;
 
-    public void ramWrite(int addr, u_byte value) {
-        bus.ramWrite(addr, value);
+        public RAM(Bus bus) {
+            this.bus = bus;
+        }
+
+        private int getPaddedAddr(int addr) {
+            return addr + bus.getRomSize();
+        }
+
+        @Override
+        public u_byte memRead(int addr) {
+            return bus.memRead(getPaddedAddr(addr));
+        }
+
+        @Override
+        public void memWrite(int addr, u_byte value) {
+            bus.memWrite(getPaddedAddr(addr), value);
+        }
     }
 }

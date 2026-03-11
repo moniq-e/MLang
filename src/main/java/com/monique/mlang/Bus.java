@@ -1,5 +1,8 @@
 package com.monique.mlang;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 import com.monique.mlang.util.Memory;
@@ -10,18 +13,30 @@ public class Bus implements Memory {
     private u_byte[] memory;
     private int romSize;
 
-    public Bus(String rom) {
-        memory = new u_byte[0xFFFF];
-        Arrays.setAll(memory, i -> ubyte(0));
+    public Bus(File rom) throws IOException {
+        this();
         loadRom(rom);
     }
 
-    public void loadRom(String rom) {
+    public Bus() {
+        memory = new u_byte[0xFFFF];
+        Arrays.setAll(memory, i -> ubyte(0));
+    }
+
+    public void loadRom(File rom) throws IOException {
         clear();
-        romSize = rom.length() / 8;
-        for (int i = 0; i < romSize; i++) {
-            memory[i].set(Integer.parseInt(rom.substring(i * 8, i * 8 + 8), 2));
+
+        var fis = new FileInputStream(rom);
+        var buffer = new byte[1024];
+        int bytesRead, k = 0;
+
+        while ((bytesRead = fis.read(buffer)) != -1) {
+            for (int i = 0; i < bytesRead; i++) {
+                memory[k++].set(buffer[i]);
+            }
         }
+        fis.close();
+        romSize = k;
     }
 
     private void clear() {
@@ -29,10 +44,6 @@ public class Bus implements Memory {
             memory[i].set(0);
         }
         romSize = 0;
-    }
-
-    private int getAddrWithPadd(int addr) {
-        return addr + romSize;
     }
 
     @Override
@@ -45,11 +56,7 @@ public class Bus implements Memory {
         memory[addr].set(value);
     }
 
-    public u_byte ramRead(int addr) {
-        return memRead(getAddrWithPadd(addr));
-    }
-    
-    public void ramWrite(int addr, u_byte value) {
-        memWrite(getAddrWithPadd(addr), value);
+    public int getRomSize() {
+        return romSize;
     }
 }

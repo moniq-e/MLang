@@ -33,7 +33,7 @@ public class Compiler {
 
     public static Path changeExtension(File f, String ext) {
         int i = f.getName().lastIndexOf('.');
-        String name = i >= 0 ? f.getName().substring(0, i - 1) : f.getName();
+        String name = i >= 0 ? f.getName().substring(0, i) : f.getName();
         return new File(f.getParent(), name + ext).toPath();
     }
 
