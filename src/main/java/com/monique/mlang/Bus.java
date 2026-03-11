@@ -48,7 +48,7 @@ public class Bus implements Memory {
 
     @Override
     public u_byte memRead(int addr) {
-        return memory[addr];
+        return ubyte(memory[addr].get());
     }
     
     @Override

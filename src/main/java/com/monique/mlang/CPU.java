@@ -73,6 +73,20 @@ public class CPU implements Memory {
                 case 0x04 -> {
                     break;
                 }
+                //ENT addr_dest
+                case 0x05 -> {
+                    var ptr_addr = memRead(pc);
+
+                    if (ptr_addr.equals(0)) {
+                        incPC();
+                        break;
+                    }
+
+                    var addr = ram.memRead(ptr_addr);
+
+                    memWrite(pc, ubyte(0));
+                    pc.set(addr.get());
+                }
                 //JMP addr_dest
                 case 0xF0 -> {
                     var addr = ram.memRead(memRead(pc));
