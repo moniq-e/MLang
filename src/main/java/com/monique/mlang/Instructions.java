@@ -12,7 +12,8 @@ public class Instructions {
         map.put("ADD", 0x81);
         map.put("CMP", 0x42);
         map.put("JMP", 0xF0);
-        map.put("POS", 0x03);
+        map.put("REG", 0x03);
+        map.put("END", 0x04);
         map.put("EQJ", 0x0F);
         map.put("NEJ", 0x0E);
     }

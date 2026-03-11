@@ -61,11 +61,17 @@ public class CPU implements Memory {
                     ram.memWrite(addr, ubyte(res));
                     incPC(3);
                 }
-                //POS addr_dest
+                //REG addr_dest addr_end
                 case 0x03 -> {
                     var addr = memRead(pc);
-                    incPC();
+                    var end = memRead(pc.get() + 1);
+                    incPC(2);
                     ram.memWrite(addr, ubyte(pc.get()));
+                    pc.set(end.get());
+                }
+                //END
+                case 0x04 -> {
+                    break;
                 }
                 //JMP addr_dest
                 case 0xF0 -> {

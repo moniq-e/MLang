@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 public class Compiler {
     private static Instructions instmap = new Instructions();
@@ -16,10 +17,31 @@ public class Compiler {
 
         var insts = raw.split(" |\\R");
 
-        for (var value : insts) {
+        var posix = new ArrayList<Integer>();
+        var k = 0;
+        for (int i = 0; i < insts.length; i++) {
+            var value = insts[i];
+
+            if (value.equals("_")) {
+                bin += "_";
+                k++;
+                continue;
+            }
+
+            if (value.equals("END")) {
+                posix.add(k);
+            }
+
             var inst = instmap.get(value);
-            bin += inst != null ? parse(inst) : parse(value);
+            var res = inst != null ? parse(inst) : parse(value);
+            bin += res;
+            k += res.length() / 8;
         }
+
+        for (int i = 0; i < posix.size(); i++) {
+            bin.replaceFirst("_", parse(posix.removeFirst()));
+        }
+
         Files.write(changeExtension(new File(Compiler.class.getResource(path).toURI()), ".mbin"), binaryStringToByteArray(bin));
     }
 
