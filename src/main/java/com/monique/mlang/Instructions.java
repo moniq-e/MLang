@@ -22,4 +22,14 @@ public class Instructions {
     public Integer get(String name) {
         return map.get(name.toUpperCase());
     }
+
+    public String export() {
+        var keys = map.keySet().toArray(new String[map.keySet().size()]);
+        var res = "";
+        for (int i = 0; i < keys.length; i++) {
+            res += keys[i] + "|";
+        }
+        res = res.substring(0, res.length() - 1);
+        return res;
+    }
 }

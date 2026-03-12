@@ -11,6 +11,7 @@ import static com.monique.mlang.util.u_byte.ubyte;
 import com.monique.mlang.Bus;
 import com.monique.mlang.CPU;
 import com.monique.mlang.Compiler;
+import com.monique.mlang.Instructions;
 
 public class TestBus {
 
@@ -20,6 +21,11 @@ public class TestBus {
 
         var cpu = new CPU(new Bus(comp));
         cpu.run();
+    }
+
+    @Test
+    public void exportInstructions() {
+        System.out.println(new Instructions().export());
     }
 
     @Test
