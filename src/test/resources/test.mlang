@@ -1,17 +1,17 @@
-STR 1 1
-STR 2 5
-STR 3 1
+STR 'one 1
+STR 'max 5
+STR 'counter 1
 
-REG 4 _
-PRT 1
-NEJ 2 3 5
+REG 'reg1 _
+PRT 'one
+NEJ 'max 'counter 'reg2
 END
 
-REG 5 _
-ADD 3 3 1
-JMP 4
+REG 'reg2 _
+ADD 'counter 'counter 'one
+JMP 'reg1
 END
 
-ENT 4
+ENT 'reg1
 
 BRK

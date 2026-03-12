@@ -16,6 +16,7 @@ public class Compiler {
         var bin = "";
 
         var insts = raw.split(" |\\R");
+        var varParser = new VarParser();
 
         var posix = new ArrayList<Integer>();
         var k = 0;
@@ -31,6 +32,10 @@ public class Compiler {
 
             if (value.equals("END")) {
                 posix.add(k);
+            }
+
+            if (value.startsWith("'")) {
+                value = varParser.getVariableAddr(value);
             }
 
             var inst = instmap.get(value);
