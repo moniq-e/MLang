@@ -120,6 +120,18 @@ public class CPU implements Memory {
                         incPC(3);
                     }
                 }
+                //FOR addr_dest addr_length addr_i
+                case 0x0D -> {
+                    var addr = ram.memRead(memRead(pc.get()));
+                    var length = ram.memRead(memRead(pc.get() + 1));
+                    var i = ram.memRead(memRead(pc.get() + 2));
+
+                    if (!length.equals(i)) {
+                        pc.set(addr.get());
+                    } else {
+                        incPC(3);
+                    }
+                }
             }
         }
     }

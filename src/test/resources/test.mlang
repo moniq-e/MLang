@@ -1,17 +1,12 @@
-STR 'one 1
-STR 'max 5
-STR 'counter 1
+STR '1 1
+STR 'i 0
+STR 'length 5
 
-REG 'reg1 _
-PRT 'one
-NEJ 'max 'counter 'reg2
+REG 'for _
+PRT '1
+ADD 'i 'i '1
 END
 
-REG 'reg2 _
-ADD 'counter 'counter 'one
-JMP 'reg1
-END
-
-ENT 'reg1
+FOR 'for 'length 'i
 
 BRK
