@@ -18,6 +18,7 @@ public class Instructions {
         map.put("EQJ", 0x0F);
         map.put("NEJ", 0x0E);
         map.put("FOR", 0x0D);
+        map.put("FRE", 0x10);
     }
 
     public Integer get(String name) {

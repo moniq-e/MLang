@@ -136,11 +136,11 @@ public class CPU implements Memory {
         }
     }
 
-    public void incPC() {
+    private void incPC() {
         pc.set(pc.get() + 1);
     }
 
-    public void incPC(int value) {
+    private void incPC(int value) {
         pc.set(pc.get() + value);
     }
 
@@ -154,25 +154,45 @@ public class CPU implements Memory {
         bus.memWrite(addr, value);
     }
 
+    private void compactRAM() {
+        
+    }
+
     private class RAM implements Memory {
         private Bus bus;
+        private short[] handler;
+        private u_byte[] alocated;
 
         public RAM(Bus bus) {
             this.bus = bus;
+            this.handler = new short[bus.getMemorySize()];
+            this.alocated = new u_byte[bus.getMemorySize()];
+        }
+
+        public void malloc() {
+
+        }
+
+        private int getRealAddr(int addr) {
+            return handler[addr];
+        }
+
+        public void changeRealAddr(int addr, short realAddr) {
+            handler[addr] = realAddr;
         }
 
         private int getPaddedAddr(int addr) {
-            return addr + bus.getRomSize();
+            return Math.min(addr + bus.getRomSize(), bus.getMemorySize());
         }
 
         @Override
         public u_byte memRead(int addr) {
-            return bus.memRead(getPaddedAddr(addr));
+            return bus.memRead(getPaddedAddr(getRealAddr(addr)));
         }
 
         @Override
         public void memWrite(int addr, u_byte value) {
-            bus.memWrite(getPaddedAddr(addr), value);
+            bus.memWrite(getPaddedAddr(getRealAddr(addr)), value);
         }
     }
 }

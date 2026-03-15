@@ -19,7 +19,7 @@ public class Bus implements Memory {
     }
 
     public Bus() {
-        memory = new u_byte[0xFFFF];
+        memory = new u_byte[getMemorySize()];
         Arrays.setAll(memory, i -> ubyte(0));
     }
 
@@ -58,5 +58,9 @@ public class Bus implements Memory {
 
     public int getRomSize() {
         return romSize;
+    }
+
+    public int getMemorySize() {
+        return 0xFFFF;
     }
 }
