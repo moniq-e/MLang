@@ -9,5 +9,8 @@ ADD 'i 'i '1
 END
 
 FOR 'for 'length 'i
+FRE 'i
+
+STR 'i 0
 
 BRK

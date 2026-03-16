@@ -42,6 +42,12 @@ public class CPU implements Memory {
                     ram.memWrite(addr, value);
                     incPC(2);
                 }
+                //FRE addr
+                case 0x10 -> {
+                    var addr = memRead(pc);
+                    ram.free(addr.get());
+                    incPC();
+                }
                 //ADD addr_dest addr_1 addr_2
                 case 0x81 -> {
                     var addr = memRead(pc);
