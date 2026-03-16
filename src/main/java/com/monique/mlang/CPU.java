@@ -37,6 +37,8 @@ public class CPU implements Memory {
                 case 0xFF -> {
                     var addr = memRead(pc);
                     var value = memRead(pc.get() + 1);
+
+                    ram.malloc(addr.get(), 1);
                     ram.memWrite(addr, value);
                     incPC(2);
                 }
@@ -66,6 +68,8 @@ public class CPU implements Memory {
                     var addr = memRead(pc);
                     var end = memRead(pc.get() + 1);
                     incPC(2);
+
+                    ram.malloc(addr.get(), 1);
                     ram.memWrite(addr, ubyte(pc.get()));
                     pc.set(end.get());
                 }

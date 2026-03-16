@@ -2,6 +2,8 @@ package com.monique.mlang;
 
 import static com.monique.mlang.util.u_byte.ubyte;
 
+import java.util.Arrays;
+
 import com.monique.mlang.util.Memory;
 import com.monique.mlang.util.u_byte;
 
@@ -13,7 +15,10 @@ public class RAM implements Memory {
 
     public RAM(Bus bus) {
         this.bus = bus;
+
         this.handler = new short[bus.getMemorySize()];
+        Arrays.fill(this.handler, (short) -1);
+
         this.alocated = new u_byte[bus.getMemorySize()];
         this.end = 0;
     }
