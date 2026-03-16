@@ -46,18 +46,23 @@ public class TestBus {
 
     @Test
     public void testRAMShift() {
-        var ram = new RAM(new Bus());
+        var ram = new RAM(new Bus() {
+            @Override
+            public int getVarParserCount() {
+                return 3; //max variables
+            }
+        });
 
         ram.malloc(0, 1);
         ram.malloc(1, 2);
         ram.malloc(2, 1);
-        
+
         ram.memWrite(0, ubyte(1));
         ram.memWrite(1, ubyte(2));
         ram.memWrite(2, ubyte(3));
-        
+
         ram.free(1);
-        
+
         assertEquals(3, ram.memRead(2).get());
         
         assertThrows(ArrayIndexOutOfBoundsException.class, () -> ram.memWrite(1, ubyte(2)));
@@ -65,6 +70,19 @@ public class TestBus {
         ram.malloc(1, 1);
         ram.memWrite(1, ubyte(2));
 
-        System.out.println(ram.exportMemory());
+        assertEquals(2, ram.memRead(1).get());
+
+        ram.malloc(3, 1);
+        ram.memWrite(3, ubyte(4));
+
+        assertEquals(4, ram.memRead(3).get());
+
+        ram.free(3);
+
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> ram.memWrite(3, ubyte(4)));
+
+        ram.malloc(4, 1);
+        ram.memWrite(4, ubyte(5));
+        assertEquals(5, ram.memRead(4).get());
     }
 }

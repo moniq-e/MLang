@@ -52,23 +52,22 @@ public class Bus implements Memory {
     public u_byte memRead(int addr) {
         return ubyte(memory[addr].get());
     }
-    
+
     @Override
     public void memWrite(int addr, u_byte value) {
         memory[addr].set(value);
     }
-    
+
     public int getRomSize() {
         return romSize;
     }
-    
+
     public int getMemorySize() {
         return 0xFFFF;
     }
-    
+
     public int getVarParserCount() {
-        return 3;
-        //return varParser.getCounter();
+        return varParser.getCounter();
     }
 
     public String exportMemory() {

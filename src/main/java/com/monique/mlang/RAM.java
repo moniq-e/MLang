@@ -37,6 +37,7 @@ public class RAM implements Memory {
         if (size + addr < end) {
             shift(addr, size);
         }
+        end -= size;
         handler[addr] = -1;
     }
 
