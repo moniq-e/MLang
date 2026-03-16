@@ -57,16 +57,21 @@ public class Bus implements Memory {
     public void memWrite(int addr, u_byte value) {
         memory[addr].set(value);
     }
-
+    
     public int getRomSize() {
         return romSize;
     }
-
+    
     public int getMemorySize() {
         return 0xFFFF;
     }
-
+    
     public int getVarParserCount() {
-        return varParser.getCounter();
+        return 3;
+        //return varParser.getCounter();
+    }
+
+    public String exportMemory() {
+        return Arrays.toString(memory);
     }
 }

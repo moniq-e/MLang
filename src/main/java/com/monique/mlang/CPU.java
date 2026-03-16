@@ -1,7 +1,6 @@
 package com.monique.mlang;
 
 import com.monique.mlang.util.Memory;
-import com.monique.mlang.util.Unsign;
 import com.monique.mlang.util.u_byte;
 import com.monique.mlang.util.u_short;
 
@@ -153,65 +152,5 @@ public class CPU implements Memory {
     @Override
     public void memWrite(int addr, u_byte value) {
         bus.memWrite(addr, value);
-    }
-
-    private class RAM implements Memory {
-        private Bus bus;
-        private short[] handler; //real unpadded memory addresses
-        private u_byte[] alocated;
-        private short end;
-
-        public RAM(Bus bus) {
-            this.bus = bus;
-            this.handler = new short[bus.getMemorySize()];
-            this.alocated = new u_byte[bus.getMemorySize()];
-            this.end = 0;
-        }
-
-        public void malloc(int addr, int size) {
-            if (end >= bus.getMemorySize() - bus.getRomSize()) return;
-
-            handler[addr] = end;
-            alocated[addr] = ubyte(size);
-            end += size;
-        }
-
-        public void free(int addr) {
-            var size = alocated[addr].get();
-            alocated[addr] = ubyte(0);
-            if (size + addr < end) {
-                shift(addr);
-            }
-        }
-
-        private void shift(int addr) {
-            var size = alocated[addr].get();
-
-            for (int i = addr + 1; i < bus.getVarParserCount(); i++) {
-                var iSize = alocated[i].get();
-                for (int j = 0; j < iSize; j++) {
-                    memWrite(i - iSize + j, memRead(i + j));
-                }
-                handler[i] -= size;
-            }
-        }
-
-        private int getRealAddr(int fakeAddr) {
-            return handler[fakeAddr];
-        }
-
-        private int getPaddedAddr(int realAddr) {
-            return Math.min(realAddr + bus.getRomSize(), bus.getMemorySize());
-        }
-
-        @Override
-        public u_byte memRead(int addr) {
-            return bus.memRead(getPaddedAddr(getRealAddr(addr)));
-        }
-
-        @Override
-        public void memWrite(int addr, u_byte value) {
-            bus.memWrite(getPaddedAddr(getRealAddr(addr)), value);
-        }
     }
 }
