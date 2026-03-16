@@ -15,6 +15,17 @@ public class Compiler {
         var raw = new String(Compiler.class.getResourceAsStream(path).readAllBytes(), StandardCharsets.UTF_8);
         var bin = "";
 
+        int startIdx;
+        while ((startIdx = raw.indexOf("//")) != -1) {
+            int endIdx;
+            while ((endIdx = raw.indexOf("\n", startIdx)) != -1) {
+                var a = raw.substring(0, startIdx);
+                var b = raw.substring(endIdx + 1, raw.length());
+                raw = a.concat(b);
+                break;
+            }
+        }
+
         var insts = raw.split(" |\\R");
         var varParser = new VarParser();
 

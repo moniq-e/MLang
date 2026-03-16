@@ -2,6 +2,7 @@ STR '1 1
 STR 'i 0
 STR 'length 5
 
+// Região do loop
 REG 'for _
 PRT '1
 ADD 'i 'i '1
