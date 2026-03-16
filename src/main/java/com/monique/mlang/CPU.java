@@ -1,6 +1,7 @@
 package com.monique.mlang;
 
 import com.monique.mlang.util.Memory;
+import com.monique.mlang.util.Unsign;
 import com.monique.mlang.util.u_byte;
 import com.monique.mlang.util.u_short;
 
@@ -154,31 +155,42 @@ public class CPU implements Memory {
         bus.memWrite(addr, value);
     }
 
-    private void compactRAM() {
-        
-    }
-
     private class RAM implements Memory {
         private Bus bus;
         private short[] handler;
         private u_byte[] alocated;
+        private short end;
 
         public RAM(Bus bus) {
             this.bus = bus;
             this.handler = new short[bus.getMemorySize()];
             this.alocated = new u_byte[bus.getMemorySize()];
+            this.end = 0;
         }
 
-        public void malloc() {
+        public void malloc(int addr, int size) {
+            if (end >= bus.getMemorySize()) return;
 
+            handler[addr] = end;
+            alocated[addr] = ubyte(size);
+            end += size;
+        }
+
+        public void free(int addr) {
+            var size = alocated[addr].get();
+            alocated[addr] = ubyte(0);
+            if (size + addr < end) {
+                shift(addr);
+            }
+        }
+
+        private void shift(int addr) {
+            var realAddr = getRealAddr(addr);
+            
         }
 
         private int getRealAddr(int addr) {
             return handler[addr];
-        }
-
-        public void changeRealAddr(int addr, short realAddr) {
-            handler[addr] = realAddr;
         }
 
         private int getPaddedAddr(int addr) {
