@@ -16,10 +16,10 @@ import com.monique.mlang.Instructions;
 public class TestBus {
 
     public static void main(String[] args) throws Exception {
-        Compiler.compile("/test.mlang");
+        var vp = Compiler.compile("/test.mlang");
         var comp = new File(TestBus.class.getResource("/test.mbin").toURI());
 
-        var cpu = new CPU(new Bus(comp));
+        var cpu = new CPU(new Bus(comp, vp));
         cpu.run();
     }
 

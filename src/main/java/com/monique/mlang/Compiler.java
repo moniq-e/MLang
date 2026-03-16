@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Compiler {
     private static Instructions instmap = new Instructions();
 
-    public static void compile(String path) throws IOException, URISyntaxException {
+    public static VarParser compile(String path) throws IOException, URISyntaxException {
         var raw = new String(Compiler.class.getResourceAsStream(path).readAllBytes(), StandardCharsets.UTF_8);
         var bin = "";
 
@@ -49,6 +49,7 @@ public class Compiler {
         }
 
         Files.write(changeExtension(new File(Compiler.class.getResource(path).toURI()), ".mbin"), binaryStringToByteArray(bin));
+        return varParser;
     }
 
     public static byte[] binaryStringToByteArray(String source) {

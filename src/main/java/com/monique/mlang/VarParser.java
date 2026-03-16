@@ -15,4 +15,8 @@ public class VarParser {
         variables.put(var, addr);
         return addr;
     }
+
+    public int getCounter() {
+        return counter;
+    }
 }

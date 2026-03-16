@@ -12,10 +12,12 @@ import static com.monique.mlang.util.u_byte.ubyte;
 public class Bus implements Memory {
     private u_byte[] memory;
     private int romSize;
+    private VarParser varParser;
 
-    public Bus(File rom) throws IOException {
+    public Bus(File rom, VarParser varParser) throws IOException {
         this();
         loadRom(rom);
+        this.varParser = varParser;
     }
 
     public Bus() {
@@ -62,5 +64,9 @@ public class Bus implements Memory {
 
     public int getMemorySize() {
         return 0xFFFF;
+    }
+
+    public int getVarParserCount() {
+        return varParser.getCounter();
     }
 }

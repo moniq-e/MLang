@@ -157,7 +157,7 @@ public class CPU implements Memory {
 
     private class RAM implements Memory {
         private Bus bus;
-        private short[] handler;
+        private short[] handler; //real unpadded memory addresses
         private u_byte[] alocated;
         private short end;
 
@@ -169,7 +169,7 @@ public class CPU implements Memory {
         }
 
         public void malloc(int addr, int size) {
-            if (end >= bus.getMemorySize()) return;
+            if (end >= bus.getMemorySize() - bus.getRomSize()) return;
 
             handler[addr] = end;
             alocated[addr] = ubyte(size);
@@ -185,16 +185,23 @@ public class CPU implements Memory {
         }
 
         private void shift(int addr) {
-            var realAddr = getRealAddr(addr);
-            
+            var size = alocated[addr].get();
+
+            for (int i = addr + 1; i < bus.getVarParserCount(); i++) {
+                var iSize = alocated[i].get();
+                for (int j = 0; j < iSize; j++) {
+                    memWrite(i - iSize + j, memRead(i + j));
+                }
+                handler[i] -= size;
+            }
         }
 
-        private int getRealAddr(int addr) {
-            return handler[addr];
+        private int getRealAddr(int fakeAddr) {
+            return handler[fakeAddr];
         }
 
-        private int getPaddedAddr(int addr) {
-            return Math.min(addr + bus.getRomSize(), bus.getMemorySize());
+        private int getPaddedAddr(int realAddr) {
+            return Math.min(realAddr + bus.getRomSize(), bus.getMemorySize());
         }
 
         @Override
