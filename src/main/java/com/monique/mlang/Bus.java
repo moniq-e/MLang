@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.monique.mlang.util.Memory;
+import com.monique.mlang.util.VarParser;
 import com.monique.mlang.util.u_byte;
 import static com.monique.mlang.util.u_byte.ubyte;
 

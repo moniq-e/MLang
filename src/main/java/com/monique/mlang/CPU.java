@@ -7,6 +7,8 @@ import com.monique.mlang.util.u_short;
 import static com.monique.mlang.util.u_byte.ubyte;
 import static com.monique.mlang.util.u_short.ushort;
 
+import com.monique.mlang.util.Format;
+
 public class CPU implements Memory {
     private u_short pc = ushort(0);
     private Bus bus;
@@ -33,14 +35,23 @@ public class CPU implements Memory {
                     System.out.println(ram.memRead(addr).get());
                     incPC();
                 }
-                //STR addr_dest value
+                //STR size addr_dest value
                 case 0xFF -> {
-                    var addr = memRead(pc);
-                    var value = memRead(pc.get() + 1);
+                    var size = memRead(pc).get();
+                    var addr = memRead(pc.get() + 1);
+                    int value = memRead(pc.get() + 2).get();
+                    //TODO: refazer direto com ubyte array sem int
+                    for (int i = 1; i < size; i++) {
+                        value = value & (memRead(pc.get() + 2 + i).get() << (8 * i));
+                    }
 
-                    ram.malloc(addr.get(), 1);
-                    ram.memWrite(addr, value);
-                    incPC(2);
+                    ram.malloc(addr.get(), size);
+                    if (size > 1) {
+                        ram.memWrite(addr.get(), Format.toUnsignedByteArray(value));
+                    } else {
+                        ram.memWrite(addr, ubyte(value));
+                    }
+                    incPC(2 + size);
                 }
                 //FRE addr
                 case 0x10 -> {

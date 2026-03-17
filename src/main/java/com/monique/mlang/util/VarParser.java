@@ -1,4 +1,4 @@
-package com.monique.mlang;
+package com.monique.mlang.util;
 
 import java.util.HashMap;
 
