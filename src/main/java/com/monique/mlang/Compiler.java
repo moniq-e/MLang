@@ -28,14 +28,35 @@ public class Compiler {
             }
         }
 
-        var insts = raw.split(" |\\R");
-        var varParser = new VarParser();
+        var splitted = raw.split(" |\\R");
 
+        for (int i = 0; i < splitted.length; i++) {
+            if (splitted[i] == null) continue;
+
+            if (splitted[i].startsWith("\"")) {
+                var res = splitted[i];
+                var init = i;
+
+                do {
+                    res = res.concat(" " + splitted[++i]);
+                } while (!res.endsWith("\""));
+
+                System.arraycopy(splitted, i + 1, splitted, init + 1, splitted.length - i -1);
+
+                for (int j = splitted.length - 1; j > splitted.length - 1 - (i - init); j--) {
+                    splitted[j] = null;
+                }
+
+                splitted[init] = res.replace("\"", "");
+            }
+        }
+
+        var varParser = new VarParser();
         var posix = new ArrayList<Integer>();
         var k = 0;
-        for (int i = 0; i < insts.length; i++) {
-            var value = insts[i];
-            if (value.equals("")) continue;
+        for (int i = 0; i < splitted.length; i++) {
+            var value = splitted[i];
+            if (value == null || value.equals("")) continue;
 
             if (value.equals("_")) {
                 bin += "_";
