@@ -24,6 +24,7 @@ public class Bus implements Memory {
     public Bus() {
         memory = new u_byte[getMemorySize()];
         Arrays.setAll(memory, i -> ubyte(0));
+        romSize = 0;
     }
 
     public void loadRom(File rom) throws IOException {

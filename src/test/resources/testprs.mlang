@@ -1,5 +1,5 @@
-STR 2 's 256
+STR 10 's Hello World
 
-PRT 's
+PRS 's
 
 BRK

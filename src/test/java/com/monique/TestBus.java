@@ -14,6 +14,7 @@ import com.monique.mlang.CPU;
 import com.monique.mlang.Compiler;
 import com.monique.mlang.Instructions;
 import com.monique.mlang.RAM;
+import com.monique.mlang.util.Format;
 
 public class TestBus {
 
@@ -84,5 +85,16 @@ public class TestBus {
         ram.malloc(4, 1);
         ram.memWrite(4, ubyte(5));
         assertEquals(5, ram.memRead(4).get());
+    }
+
+    @Test
+    public void testIntConversion() {
+        var ram = new RAM(new Bus());
+        var value = 256;
+
+        ram.malloc(0, 2);
+        ram.memWrite(0, Format.toUnsignedByteArray(value));
+        var from = Format.toInt(ram.readAllBytes(0));
+        assertEquals(value, from);
     }
 }

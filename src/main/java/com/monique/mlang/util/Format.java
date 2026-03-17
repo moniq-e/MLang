@@ -17,13 +17,13 @@ public class Format {
         int res = bytes[0].get();
 
         for (int i = 1; i < bytes.length; i++) {
-            res = res & (bytes[i].get() << (8 * i));
+            res = res | (bytes[i].get() << (8 * i));
         }
         return res;
     }
 
     public static u_byte[] toUnsignedByteArray(int value) {
-        var ubyteArr = new u_byte[(32 - Integer.numberOfLeadingZeros(value)) + 7 / 8];
+        var ubyteArr = new u_byte[((32 - Integer.numberOfLeadingZeros(value)) + 7) / 8];
 
         for (int i = 0; i < ubyteArr.length; i++) {
             ubyteArr[i] = ubyte(value >> (8 * i));
