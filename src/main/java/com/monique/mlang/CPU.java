@@ -3,11 +3,10 @@ package com.monique.mlang;
 import com.monique.mlang.util.Memory;
 import com.monique.mlang.util.u_byte;
 import com.monique.mlang.util.u_short;
+import com.monique.mlang.util.Format;
 
 import static com.monique.mlang.util.u_byte.ubyte;
 import static com.monique.mlang.util.u_short.ushort;
-
-import com.monique.mlang.util.Format;
 
 public class CPU implements Memory {
     private u_short pc = ushort(0);
@@ -31,25 +30,43 @@ public class CPU implements Memory {
                 }
                 //PRT addr_value
                 case 0x55 -> {
+                    var addr = memRead(pc).get();
+                    int value = readInt(addr);
+
+                    System.out.println(value);
+                    incPC();
+                }
+                //PRS addr_value
+                case 0x56 -> {
                     var addr = memRead(pc);
-                    System.out.println(ram.memRead(addr).get());
+                    var size = ram.getSize(addr.get());
+                    String value;
+
+                    if (size > 1) {
+                        value = Format.toString(ram.readAllBytes(addr.get()));
+                    } else {
+                        value = String.valueOf((char) ram.memRead(addr).get());
+                    }
+
+                    System.out.println(value);
                     incPC();
                 }
                 //STR size addr_dest value
                 case 0xFF -> {
                     var size = memRead(pc).get();
                     var addr = memRead(pc.get() + 1);
-                    int value = memRead(pc.get() + 2).get();
-                    //TODO: refazer direto com ubyte array sem int
-                    for (int i = 1; i < size; i++) {
-                        value = value & (memRead(pc.get() + 2 + i).get() << (8 * i));
-                    }
 
                     ram.malloc(addr.get(), size);
+
                     if (size > 1) {
-                        ram.memWrite(addr.get(), Format.toUnsignedByteArray(value));
+                        var ubArr = new u_byte[size];
+                        for (int i = 0; i < size; i++) {
+                            ubArr[i] = memRead(pc.get() + 2 + i);
+                        }
+                        ram.memWrite(addr, ubArr);
                     } else {
-                        ram.memWrite(addr, ubyte(value));
+                        var value = memRead(pc.get() + 2);
+                        ram.memWrite(addr, value);
                     }
                     incPC(2 + size);
                 }
@@ -62,21 +79,28 @@ public class CPU implements Memory {
                 //ADD addr_dest addr_1 addr_2
                 case 0x81 -> {
                     var addr = memRead(pc);
-                    var aAddr = memRead(pc.get() + 1);
-                    var bAddr = memRead(pc.get() + 2);
-                    var a = ram.memRead(aAddr);
-                    var b = ram.memRead(bAddr);
-                    ram.memWrite(addr, ubyte(a.get() + b.get()));
+                    var aAddr = memRead(pc.get() + 1).get();
+                    var bAddr = memRead(pc.get() + 2).get();
+                    var a = readInt(aAddr);
+                    var b = readInt(bAddr);
+                    var res = a + b;
+
+                    if (res > 255) {
+                        ram.memWrite(addr, Format.toUnsignedByteArray(res));
+                    } else {
+                        ram.memWrite(addr, ubyte(res));
+                    }
                     incPC(3);
                 }
                 //CMP addr_dest addr_1 addr_2
                 case 0x42 -> {
                     var addr = memRead(pc);
-                    var aAddr = memRead(pc.get() + 1);
-                    var bAddr = memRead(pc.get() + 2);
-                    var a = ram.memRead(aAddr);
-                    var b = ram.memRead(bAddr);
-                    var res = Math.min(Math.max(a.get() - b.get(), -1), 1);
+                    var aAddr = memRead(pc.get() + 1).get();
+                    var bAddr = memRead(pc.get() + 2).get();
+                    var a = readInt(aAddr);
+                    var b = readInt(bAddr);
+
+                    var res = Math.min(Math.max(a - b, -1), 1);
                     ram.memWrite(addr, ubyte(res));
                     incPC(3);
                 }
@@ -115,28 +139,28 @@ public class CPU implements Memory {
                 }
                 //EQJ addr_1 addr_2 addr_dest
                 case 0x0F -> {
-                    var aAddr = memRead(pc.get());
-                    var bAddr = memRead(pc.get() + 1);
-                    var addr = ram.memRead(memRead(pc.get() + 2));
-                    var a = ram.memRead(aAddr);
-                    var b = ram.memRead(bAddr);
+                    var aAddr = memRead(pc.get()).get();
+                    var bAddr = memRead(pc.get() + 1).get();
+                    var addr = ram.memRead(memRead(pc.get() + 2)).get();
+                    var a = readInt(aAddr);
+                    var b = readInt(bAddr);
 
-                    if (a.equals(b)) {
-                        pc.set(addr.get());
+                    if (a == b) {
+                        pc.set(addr);
                     } else {
                         incPC(3);
                     }
                 }
                 //NQJ addr_1 addr_2 addr_dest
                 case 0x0E -> {
-                    var aAddr = memRead(pc.get());
-                    var bAddr = memRead(pc.get() + 1);
-                    var addr = ram.memRead(memRead(pc.get() + 2));
-                    var a = ram.memRead(aAddr);
-                    var b = ram.memRead(bAddr);
+                    var aAddr = memRead(pc.get()).get();
+                    var bAddr = memRead(pc.get() + 1).get();
+                    var addr = ram.memRead(memRead(pc.get() + 2)).get();
+                    var a = readInt(aAddr);
+                    var b = readInt(bAddr);
 
-                    if (!a.equals(b)) {
-                        pc.set(addr.get());
+                    if (a != b) {
+                        pc.set(addr);
                     } else {
                         incPC(3);
                     }
@@ -163,6 +187,18 @@ public class CPU implements Memory {
 
     private void incPC(int value) {
         pc.set(pc.get() + value);
+    }
+
+    private int readInt(int addr) {
+        int size = ram.getSize(addr);
+        int value;
+
+        if (size > 1) {
+            value = Format.toInt(ram.readAllBytes(addr));
+        } else {
+            value = ram.memRead(addr).get();
+        }
+        return value;
     }
 
     @Override

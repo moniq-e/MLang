@@ -8,6 +8,7 @@ public class Instructions {
     public Instructions() {
         map.put("BRK", 0x00);
         map.put("PRT", 0x55);
+        map.put("PRS", 0x56);
         map.put("STR", 0xFF);
         map.put("ADD", 0x81);
         map.put("CMP", 0x42);

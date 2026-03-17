@@ -70,31 +70,39 @@ public class RAM implements Memory {
         }
         return res;
     }
-    
+
     private int getRealAddr(int fakeAddr) {
         return handler[fakeAddr];
     }
-    
+
     private int getPaddedAddr(int realAddr) {
         return Math.min(realAddr + bus.getRomSize(), bus.getMemorySize());
     }
-    
+
     @Override
     public u_byte memRead(int addr) {
         return bus.memRead(getPaddedAddr(getRealAddr(addr)));
     }
-    
+
     @Override
     public void memWrite(int addr, u_byte value) {
         bus.memWrite(getPaddedAddr(getRealAddr(addr)), value);
     }
-    
+
+    public int getSize(int addr) {
+        return alocated[addr].get();
+    }
+
     public void memWrite(int addr, u_byte[] arr) {
         for (int i = 0; i < arr.length; i++) {
             memWrite(addr + i, arr[i]);
         }
     }
-    
+
+    public void memWrite(u_byte addr, u_byte[] arr) {
+        memWrite(addr.get(), arr);
+    }
+
     public String exportMemory() {
         return bus.exportMemory();
     }

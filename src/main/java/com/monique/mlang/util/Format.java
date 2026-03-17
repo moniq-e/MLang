@@ -14,7 +14,7 @@ public class Format {
     }
 
     public static int toInt(u_byte[] bytes) {
-        int res = bytes[1].get();
+        int res = bytes[0].get();
 
         for (int i = 1; i < bytes.length; i++) {
             res = res & (bytes[i].get() << (8 * i));

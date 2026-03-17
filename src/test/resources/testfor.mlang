@@ -1,6 +1,6 @@
-STR '1 1
-STR 'i 0
-STR 'length 5
+STR 1 '1 1
+STR 1 'i 0
+STR 1 'length 5
 
 // Região do loop
 REG 'for _
@@ -11,6 +11,6 @@ END
 FOR 'for 'length 'i
 FRE 'i
 
-STR 'i 0
+STR 1 'i 0
 
 BRK
