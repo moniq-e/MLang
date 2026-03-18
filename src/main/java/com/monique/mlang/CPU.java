@@ -168,10 +168,10 @@ public class CPU implements Memory {
                 //FOR addr_dest addr_length addr_i
                 case 0x0D -> {
                     var addr = ram.memRead(memRead(pc.get()));
-                    var length = ram.memRead(memRead(pc.get() + 1));
-                    var i = ram.memRead(memRead(pc.get() + 2));
+                    var length = readInt(memRead(pc.get() + 1).get());
+                    var i = readInt(memRead(pc.get() + 2).get());
 
-                    if (!length.equals(i)) {
+                    if (i < length) {
                         pc.set(addr.get());
                     } else {
                         incPC(3);

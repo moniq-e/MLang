@@ -65,8 +65,10 @@ public class RAM implements Memory {
         int size = alocated[addr].get();
         var res = new u_byte[size];
 
+        var realAddr = getRealAddr(addr);
+
         for (int i = 0; i < size; i++) {
-            res[i] = memRead(addr + i);
+            res[i] = bus.memRead(getPaddedAddr(realAddr + i));
         }
         return res;
     }

@@ -1,15 +1,18 @@
 STR 1 '1 1
-STR 1 'i 0
-STR 1 'length 5
+STR 2 'i 256
+STR 2 'length 257
 
 // Região do loop
 REG 'for _
-PRT '1
 ADD 'i 'i '1
 END
 
 FOR 'for 'length 'i
+
+PRT 'i
+
 FRE 'i
+FRE 'length
 
 STR 1 'i 0
 

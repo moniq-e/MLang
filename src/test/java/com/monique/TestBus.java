@@ -19,8 +19,8 @@ import com.monique.mlang.util.Format;
 public class TestBus {
 
     public static void main(String[] args) throws Exception {
-        var vp = Compiler.compile("/testprs.mlang");
-        var comp = new File(TestBus.class.getResource("/testprs.mbin").toURI());
+        var vp = Compiler.compile("/testfor.mlang");
+        var comp = new File(TestBus.class.getResource("/testfor.mbin").toURI());
 
         var cpu = new CPU(new Bus(comp, vp));
         cpu.run();
