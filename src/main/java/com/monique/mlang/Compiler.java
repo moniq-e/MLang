@@ -29,7 +29,59 @@ public class Compiler {
         }
 
         var splitted = raw.split(" |\\R");
+        surroundString(splitted);
 
+        var varParser = new VarParser(); // Traduzir variáveis
+        var posix = new ArrayList<Integer>(); // Posição final de region
+        var k = 0; // Contador de posição final de region
+
+        var strcount = -1; // STR indicador;
+        var strsize = 0; // Tamanho a ser convertido o valor literal a ser guardado pelo STR
+
+        for (int i = 0; i < splitted.length; i++) {
+            var value = splitted[i];
+            if (value == null || value.equals("")) continue;
+
+            switch (value) {
+                case "_":
+                    bin += "_";
+                    k++;
+                    continue;
+                case "END":
+                    posix.add(k);
+                    break;
+                case "STR":
+                    strcount = 0;
+                    break;
+            }
+
+            if (value.startsWith("'")) {
+                value = varParser.getVariableAddr(value);
+            }
+            
+            var inst = instmap.get(value);
+            var res = inst != null ? parse(inst) : parse(value);
+            
+            if (strcount == 1) strsize = Integer.parseInt(value);
+            if (strcount == 3) {
+                res = parse(value, strsize);
+                strcount = -1;
+            }
+            if (strcount >= 0) strcount++;
+
+            bin += res;
+            k += res.length() / 8;
+        }
+
+        while (!posix.isEmpty()) {
+            bin = bin.replaceFirst("_", parse(posix.removeFirst()));
+        }
+
+        Files.write(changeExtension(new File(Compiler.class.getResource(path).toURI()), ".mbin"), binaryStringToByteArray(bin));
+        return varParser;
+    }
+
+    public static void surroundString(String[] splitted) {
         for (int i = 0; i < splitted.length; i++) {
             if (splitted[i] == null) continue;
 
@@ -50,40 +102,6 @@ public class Compiler {
                 splitted[init] = res.replace("\"", "");
             }
         }
-
-        var varParser = new VarParser();
-        var posix = new ArrayList<Integer>();
-        var k = 0;
-        for (int i = 0; i < splitted.length; i++) {
-            var value = splitted[i];
-            if (value == null || value.equals("")) continue;
-
-            if (value.equals("_")) {
-                bin += "_";
-                k++;
-                continue;
-            }
-
-            if (value.equals("END")) {
-                posix.add(k);
-            }
-
-            if (value.startsWith("'")) {
-                value = varParser.getVariableAddr(value);
-            }
-
-            var inst = instmap.get(value);
-            var res = inst != null ? parse(inst) : parse(value);
-            bin += res;
-            k += res.length() / 8;
-        }
-
-        while (!posix.isEmpty()) {
-            bin = bin.replaceFirst("_", parse(posix.removeFirst()));
-        }
-
-        Files.write(changeExtension(new File(Compiler.class.getResource(path).toURI()), ".mbin"), binaryStringToByteArray(bin));
-        return varParser;
     }
 
     public static byte[] binaryStringToByteArray(String source) {
@@ -98,6 +116,11 @@ public class Compiler {
         int i = f.getName().lastIndexOf('.');
         String name = i >= 0 ? f.getName().substring(0, i) : f.getName();
         return new File(f.getParent(), name + ext).toPath();
+    }
+
+    private static String parse(String value, int size) {
+        var i = Integer.valueOf(value);
+        return Integer.toBinaryString((1 << (8 * size)) | i).substring(1);
     }
 
     private static String parse(int value) {

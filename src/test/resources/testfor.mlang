@@ -1,6 +1,6 @@
 STR 1 '1 1
-STR 2 'i 256
-STR 2 'length 257
+STR 2 'i 0
+STR 2 'length 256
 
 // Região do loop
 REG 'for _
