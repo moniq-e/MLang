@@ -1,10 +1,12 @@
 package com.monique.mlang;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
+import com.monique.mlang.util.CompiledFile;
 import com.monique.mlang.util.Memory;
 import com.monique.mlang.util.VarParser;
 import com.monique.mlang.util.u_byte;
@@ -15,10 +17,10 @@ public class Bus implements Memory {
     private int romSize;
     private VarParser varParser;
 
-    public Bus(File rom, VarParser varParser) throws IOException {
+    public Bus(CompiledFile comp) throws IOException {
         this();
-        loadRom(rom);
-        this.varParser = varParser;
+        loadRom(comp.path());
+        varParser = comp.varParser();
     }
 
     public Bus() {
@@ -27,10 +29,10 @@ public class Bus implements Memory {
         romSize = 0;
     }
 
-    public void loadRom(File rom) throws IOException {
+    public void loadRom(Path rom) throws IOException {
         clear();
 
-        var fis = new FileInputStream(rom);
+        var fis = Files.newInputStream(rom, StandardOpenOption.READ);
         var buffer = new byte[1024];
         int bytesRead, k = 0;
 

@@ -8,13 +8,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import com.monique.mlang.util.CompiledFile;
 import com.monique.mlang.util.VarParser;
 
 public class Compiler {
     private static Instructions instmap = new Instructions();
 
-    public static VarParser compile(String path) throws IOException, URISyntaxException {
-        var raw = new String(Compiler.class.getResourceAsStream(path).readAllBytes(), StandardCharsets.UTF_8);
+    public static CompiledFile compile(File file) throws IOException, URISyntaxException {
+        var raw = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
         var bin = "";
 
         int startIdx;
@@ -77,8 +78,10 @@ public class Compiler {
             bin = bin.replaceFirst("_", parse(posix.removeFirst()));
         }
 
-        Files.write(changeExtension(new File(Compiler.class.getResource(path).toURI()), ".mbin"), binaryStringToByteArray(bin));
-        return varParser;
+        var compiledPath = changeExtension(file, ".mbin");
+        Files.write(compiledPath, binaryStringToByteArray(bin));
+
+        return new CompiledFile(compiledPath, varParser);
     }
 
     public static void surroundString(String[] splitted) {
@@ -149,7 +152,7 @@ public class Compiler {
             var i = Integer.valueOf(value);
             return parse(i);
         } catch (Exception e) {
-            var bytes = value.getBytes();
+            var bytes = value.getBytes(StandardCharsets.UTF_8);
             var res = "";
 
             for (byte b : bytes) {

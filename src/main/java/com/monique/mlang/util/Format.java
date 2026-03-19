@@ -2,22 +2,24 @@ package com.monique.mlang.util;
 
 import static com.monique.mlang.util.u_byte.ubyte;
 
+import java.nio.charset.StandardCharsets;
+
 public class Format {
     
-    public static String toString(u_byte[] bytes) {
-        var charArr = new char[bytes.length];
+    public static String toString(u_byte[] ubytes) {
+        var byteArr = new byte[ubytes.length];
 
-        for (int i = 0; i < bytes.length; i++) {
-            charArr[i] = (char) bytes[i].get();
+        for (int i = 0; i < ubytes.length; i++) {
+            byteArr[i] = (byte) ubytes[i].get();
         }
-        return String.valueOf(charArr);
+        return new String(byteArr, StandardCharsets.UTF_8);
     }
 
-    public static int toInt(u_byte[] bytes) {
-        int res = bytes[0].get();
+    public static int toInt(u_byte[] ubytes) {
+        int res = ubytes[0].get();
 
-        for (int i = 1; i < bytes.length; i++) {
-            res = res | (bytes[i].get() << (8 * i));
+        for (int i = 1; i < ubytes.length; i++) {
+            res = res | (ubytes[i].get() << (8 * i));
         }
         return res;
     }
