@@ -127,8 +127,22 @@ public class Compiler {
      * @return Big Endian string binary representation of {@code value} in size bytes
      */
     private static String parse(String value, int size) {
-        var i = Integer.reverseBytes(Integer.parseInt(value)) >> (32 - size * 8);
-        return Integer.toBinaryString((1 << (8 * size)) | i).substring(1);
+        try {
+            var i = Integer.parseInt(value);
+            var bigEndian = Integer.reverseBytes(i) >> (32 - size * 8);
+            return Integer.toBinaryString((1 << (8 * size)) | bigEndian).substring(1);
+        } catch (Exception e) {
+            return parseCharArray(value);
+        }
+    }
+
+    private static String parse(String value) {
+        try {
+            var i = Integer.valueOf(value);
+            return parse(i);
+        } catch (Exception e) {
+            return parseCharArray(value);
+        }
     }
 
     private static String parse(int value) {
@@ -147,18 +161,13 @@ public class Compiler {
         return res;
     }
 
-    private static String parse(String value) {
-        try {
-            var i = Integer.valueOf(value);
-            return parse(i);
-        } catch (Exception e) {
-            var bytes = value.getBytes(StandardCharsets.UTF_8);
-            var res = "";
+    private static String parseCharArray(String value) {
+        var bytes = value.getBytes(StandardCharsets.UTF_8);
+        var res = "";
 
-            for (byte b : bytes) {
-                res += Integer.toBinaryString((1 << 8) | b).substring(1);
-            }
-            return res;
+        for (byte b : bytes) {
+            res += Integer.toBinaryString((1 << 8) | b).substring(1);
         }
+        return res;
     }
 }
