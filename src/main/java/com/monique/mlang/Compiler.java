@@ -118,8 +118,13 @@ public class Compiler {
         return new File(f.getParent(), name + ext).toPath();
     }
 
+    /**
+     * @param value to be parsed
+     * @param size to return value in bytes
+     * @return Big Endian string binary representation of {@code value} in size bytes
+     */
     private static String parse(String value, int size) {
-        var i = Integer.valueOf(value);
+        var i = Integer.reverseBytes(Integer.parseInt(value)) >> (32 - size * 8);
         return Integer.toBinaryString((1 << (8 * size)) | i).substring(1);
     }
 

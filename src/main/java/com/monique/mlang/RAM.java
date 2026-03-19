@@ -96,8 +96,9 @@ public class RAM implements Memory {
     }
 
     public void memWrite(int addr, u_byte[] arr) {
+        var realAddr = getRealAddr(addr);
         for (int i = 0; i < arr.length; i++) {
-            memWrite(addr + i, arr[i]);
+            bus.memWrite(getPaddedAddr(realAddr + i), arr[i]);
         }
     }
 
