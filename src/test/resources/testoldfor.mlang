@@ -1,6 +1,6 @@
-STR 'one 1
-STR 'max 5
-STR 'counter 1
+STR 1 'one 1
+STR 1 'max 5
+STR 1 'counter 1
 
 REG 'reg1 _
 PRT 'one
