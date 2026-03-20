@@ -51,9 +51,9 @@ jobs:
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: v0.1.0-alpha
+          automatic_release_tag: v0.1.0
           prerelease: true
-          title: 0.1a
+          title: 0.1
           files: |
-            target/mlang-1.0-SNAPSHOT.jar
-            target/mlang-1.0-SNAPSHOT-sources.jar
+            target/mlang.jar
+            target/mlang-sources.jar
