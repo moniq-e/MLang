@@ -1,19 +1,21 @@
-STR 1 '1 1
-STR 2 'i 0
-STR 2 'length 256
+// Este código mostra no terminal o número armazenado na variável 'i depois de incrementá-la.
+
+STR 1 '1 1                   // Guarda o valor 1 na variável '1 com 1 byte de tamanho
+STR 1 'i 0                   // Guarda o valor 0 na variável 'i com 1 byte de tamanho
+STR 1 'length 5              // Guarda o valor 5 na variável 'length com 1 byte de tamanho
 
 // Região do loop
-REG 'for _
-ADD 'i 'i '1
+REG 'for _                   // Guarda o endereço da região na variável 'for
+ADD 'i 'i '1                 // Guarda na variável 'i o resultado da soma dos valores em 'i e '1
 END
 
-FOR 'for 'length 'i
+FOR 'for 'length 'i          // Entra na região 'for enquanto 'i for menor que 'length
 
 PRT 'i
 
-FRE 'i
-FRE 'length
+FRE 'i                       // Libera o espaço reservado para a variável 'i
+FRE 'length                  // Libera o espaço reservado para a variável 'length
 
-STR 1 'i 0
+STR 1 'i 0                   // Re-armazena o valor 0 na variável 'i com 1 byte de tamanho
 
-BRK
+BRK                          // Encerra a execução
